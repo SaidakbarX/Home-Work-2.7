@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeWork_2._7.DataAccess.Data.Enums;
+namespace HomeWork_2._7.DataAccess.Enums;
 
-public enum Degree
+public  enum Degree
 {
     Bachelor,
     Master,

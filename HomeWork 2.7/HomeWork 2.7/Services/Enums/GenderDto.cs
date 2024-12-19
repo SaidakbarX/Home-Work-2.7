@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeWork_2._7.Services.Enums;
-public  enum GenderDto
-{ 
+
+public enum GenderDto
+{
     Male,
     Female
 }

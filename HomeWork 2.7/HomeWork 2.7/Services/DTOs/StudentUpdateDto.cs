@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace HomeWork_2._7.Services.DTOs;
 
-public class StudentUpdateDto : BaseStudentDto
+public  class StudentUpdateDto : BaseStudentDto
 {
-    public  Guid Id { get; set; }
+    public Guid Id { get; set; }
     public string Password { get; set; }
-    public DataAccess.Data.Enums.Gender Gender { get; internal set; }
+    public DataAccess.Enums.Gender Gender { get; internal set; }
 }

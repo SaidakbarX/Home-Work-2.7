@@ -1,29 +1,38 @@
-﻿using HomeWork_2._7.DataAccess.Entities;
-using HomeWork_2._7.Repositories;
+﻿using HomeWork_2._7.DataAccess.Entitiy;
+using HomeWork_2._7.Repository;
 using HomeWork_2._7.Services.DTOs;
 using HomeWork_2._7.Services.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace _2._7dars.Api.Services;
+namespace HomeWork_2._7.Services;
 
 public class StudentService : IStudentService
-{
+{    
+
     private readonly IStudentRepository _studentRepository;
     public StudentService()
     {
-        _studentRepository = new StudentRepository();
+        _studentRepository = new StudentRpository();
     }
 
-    public Guid AddStudent(StudentCreatDto studentCreateDto)
+    public Guid AddStudent(StudentCreatDto student)
     {
-        var res = ValidateStudentCreateDto(studentCreateDto);
+        var res = ValidateStudentCreatDto(student);
         if (res == false)
         {
-            throw new Exception("Hatolik yuz berdi adding while");
+            throw new Exception("xatolik yuz berdi");
         }
 
-        var entity = ConverToEntity(studentCreateDto);
-        var id = _studentRepository.WriteStudent(entity);
-        return id;
+        var entity = ConvertToEntity(student);
+        var Id = _studentRepository.WriteStudent(entity);
+        return Id;
+
+
+
     }
 
     public void DeleteStudent(Guid studentId)
@@ -31,95 +40,87 @@ public class StudentService : IStudentService
         _studentRepository.RemoveStudent(studentId);
     }
 
+    public List<StudentGetDto> GetAllStudents()
+    {
+       var students  = _studentRepository.ReadAllStudents();
+        var studentDto = new List<StudentGetDto>();
+        foreach (var student in students)
+        {
+            studentDto.Add(ConvertToDto(student));
+        }
+        return studentDto;
+
+    }
+
     public StudentGetDto GetStudentById(Guid studentId)
     {
-        var entity = _studentRepository.GetStudentById(studentId);
-        var dto = ConvertToDto(entity);
-        return dto;
+       var entity = _studentRepository.GetStudentById(studentId);
+        var res = ConvertToDto(entity);
+        return res;
     }
 
-    public List<StudentGetDto> GetStudents()
+    public List<StudentGetDto> GetStudentsByDegree(DegreeDto degree)
     {
         var students = _studentRepository.ReadAllStudents();
-        //var res = students.Select(st => ConvertToDto(st)).ToList();
-
-        var studentsDto = new List<StudentGetDto>();
+        var studentDto = new List<StudentGetDto>();
         foreach (var student in students)
-        {
-            studentsDto.Add(ConvertToDto(student));
-        }
-
-        return studentsDto;
-    }
-
-    public List<StudentGetDto> GetStudentsByDegree(DegreeDto degreeStatusDto)
-    {
-        var students = _studentRepository.ReadAllStudents();
-
-        var studentsDto = new List<StudentGetDto>();
-        foreach (var student in students)
-        {
-            if ((DegreeDto)student.Degree == degreeStatusDto)
+        {  if ((DegreeDto)student.Degree == degree)
             {
-                studentsDto.Add(ConvertToDto(student));
+                studentDto.Add(ConvertToDto(student));
             }
         }
-
-        return studentsDto;
+        return studentDto;
     }
 
-    public List<StudentGetDto> GetStudentsByGender(GenderDto genderDto)
+    public List<StudentGetDto> GetStudentsByGender(GenderDto gender)
     {
         var students = _studentRepository.ReadAllStudents();
-
-        var studentsDto = new List<StudentGetDto>();
+        var studentDto = new List<StudentGetDto>();
         foreach (var student in students)
-        {
-            if ((GenderDto)student.Gender == genderDto)
+        {  if ((GenderDto)student.Gender == gender)
             {
-                studentsDto.Add(ConvertToDto(student));
+                studentDto.Add(ConvertToDto(student));
             }
         }
-
-        return studentsDto;
+        return studentDto;
     }
 
-    public void UpdateStudent(StudentUpdateDto studentUpdateDto)
-    {
-        var entity = ConverToEntity(studentUpdateDto);
+    public void UpdadateStudent(StudentUpdateDto studentUpdateDto)
+    {   var entity = ConvertToEntity(studentUpdateDto);
         _studentRepository.UpdateStudent(entity);
+        
     }
-
-    private Student ConverToEntity(StudentCreatDto studentCreateDto)
+    private  Student ConvertToEntity(StudentCreatDto student)
     {
         return new Student
         {
             Id = Guid.NewGuid(),
-            FirstName = studentCreateDto.FirstName,
-            LastName = studentCreateDto.LastName,
-            Age = studentCreateDto.Age,
-            Password = studentCreateDto.Password,
-            Email = studentCreateDto.Email,
-            Gender = (GenderDto)studentCreateDto.Gender,
-            Degree = studentCreateDto.Degree,
-        };
-    }
+            FirstName = student.FirstName,
+            LastName = student.LastName,
+            Email = student.Email,
+            Age = student.Age,
+            Password = student.Password,
+            Gender = (DataAccess.Enums.Gender)student.Gender,
+            Degree = (DataAccess.Enums.Degree)student.Degree,
 
-    private Student ConverToEntity(StudentUpdateDto studentUpdateDto)
+        };
+
+    }
+    private Student ConvertToEntity (StudentUpdateDto student)
     {
         return new Student
         {
-            Id = studentUpdateDto.Id,
-            FirstName = studentUpdateDto.FirstName,
-            LastName = studentUpdateDto.LastName,
-            Age = studentUpdateDto.Age,
-            Password = studentUpdateDto.Password,
-            Email = studentUpdateDto.Email,
-            Gender = (GenderDto)studentUpdateDto.Gender,
-            Degree = studentUpdateDto.Degree,
+            Id = student.Id,
+            FirstName = student.FirstName,
+            LastName = student.LastName,
+            Email = student.Email,
+            Password = student.Password,
+            Age= student.Age,
+            Degree = (DataAccess.Enums.Degree)student.Degree,
+            Gender = (DataAccess.Enums.Gender)student.Gender,
+
         };
     }
-
     private StudentGetDto ConvertToDto(Student student)
     {
         return new StudentGetDto
@@ -127,43 +128,37 @@ public class StudentService : IStudentService
             Id = student.Id,
             FirstName = student.FirstName,
             LastName = student.LastName,
-            Age = student.Age,
             Email = student.Email,
-            Degree = (DegreeDto)student.Degree,
+            Age = student.Age,
             Gender = (GenderDto)student.Gender,
+            Degree = (DegreeDto)student.Degree,
         };
     }
-
-    private bool ValidateStudentCreateDto(StudentCreatDto obj)
+    private bool ValidateStudentCreatDto (StudentCreatDto obj)
     {
         _studentRepository.EmailContains(obj.Email);
-
         if (string.IsNullOrWhiteSpace(obj.FirstName) || obj.FirstName.Length > 50)
         {
             return false;
         }
-
         if (string.IsNullOrWhiteSpace(obj.LastName) || obj.LastName.Length > 50)
         {
-            return false;
+            return false ;
         }
-
-        if (obj.Age < 15 || obj.Age > 150)
+        if (obj.Age < 15 || obj.Age > 50)
         {
             return false;
         }
-
-        if (string.IsNullOrWhiteSpace(obj.Email) || !obj.Email.EndsWith("@gmail.com")
-            || obj.Email.Length > 100 || obj.Email.Length <= 10)
+        if (string.IsNullOrWhiteSpace(obj.Email)|| !obj.Email.EndsWith("@gmail.com")
+            || obj.Email.Length > 100 || obj.Email.Length < 10)
         {
             return false;
         }
-
-        if (string.IsNullOrWhiteSpace(obj.Password) || obj.Password.Length > 50 || obj.Password.Length < 8)
+        if (string.IsNullOrWhiteSpace(obj.Password) || obj.Password.Length < 50)
         {
             return false;
         }
-
         return true;
+
     }
 }

@@ -1,15 +1,15 @@
 ﻿using HomeWork_2._7.Services.DTOs;
 using HomeWork_2._7.Services.Enums;
 
-namespace _2._7dars.Api.Services;
+namespace HomeWork_2._7.Services;
 
 public interface IStudentService
 {
-    Guid AddStudent(StudentCreatDto studentCreateDto);
+    Guid AddStudent(StudentCreatDto student);
     void DeleteStudent(Guid studentId);
     StudentGetDto GetStudentById(Guid studentId);
-    List<StudentGetDto> GetStudents();
-    void UpdateStudent(StudentUpdateDto studentUpdateDto);
-    List<StudentGetDto> GetStudentsByDegree(DegreeDto degreeStatusDto);
-    List<StudentGetDto> GetStudentsByGender(GenderDto genderDto);
+    List<StudentGetDto> GetAllStudents();
+    void UpdadateStudent(StudentUpdateDto studentUpdateDto);
+    List<StudentGetDto> GetStudentsByDegree (DegreeDto degree);
+    List<StudentGetDto> GetStudentsByGender (GenderDto gender);
 }

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace HomeWork_2._7.Services.Enums;
 
-public enum DegreeDto
-{
+
+public  enum DegreeDto
+{ 
     Bachelor,
     Master,
     Php
-
 }

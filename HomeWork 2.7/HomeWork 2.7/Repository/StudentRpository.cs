@@ -1,36 +1,36 @@
-﻿using HomeWork_2._7.DataAccess.Entities;
+﻿using HomeWork_2._7.DataAccess.Entitiy;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace HomeWork_2._7.Repositories;
+namespace HomeWork_2._7.Repository;
 
-public class StudentRepository : IStudentRepository
+public class StudentRpository : IStudentRepository
 {
     private readonly string _path;
     private List<Student> _students;
-    public StudentRepository()
+    public StudentRpository()
     {
         _path = "../../../DataAccess/Data/Students.json";
         _students = new List<Student>();
         if (!File.Exists(_path))
         {
             File.WriteAllText(_path, "[]");
-     
         }
         _students = ReadAllStudents();
     }
-
+    
     public void EmailContains(string email)
     {
         foreach (var student in _students)
         {
-            if (student.Email == email)
+            if (student.Email==email)
             {
-                throw new Exception("Bunday email bor qosha olmaysiz");
+                throw new Exception("Bunday Email bor qoshaolmaysiz");
             }
         }
     }
@@ -39,18 +39,18 @@ public class StudentRepository : IStudentRepository
     {
         foreach (var student in _students)
         {
-            if (student.Id ==  studentId)
+            if(student.Id==studentId)
             {
-                return student; 
+                return student;
             }
         }
-        throw new Exception($"Bunday id {studentId} li talaba yoq ");
+        throw new Exception($"Bunday id {studentId} li talaba mavjud emas");
     }
 
     public List<Student> ReadAllStudents()
     {
-       var studentsJson = File.ReadAllText(_path);
-        var students = JsonSerializer.Deserialize<List<Student>>(studentsJson);
+        var studentJson = File.ReadAllText(_path);
+        var students = JsonSerializer.Deserialize<List<Student>>(studentJson);
         return students;
     }
 
@@ -64,8 +64,9 @@ public class StudentRepository : IStudentRepository
 
     public void UpdateStudent(Student student)
     {
-        var updateStudent = GetStudentById(student.Id);
-        var index = _students.IndexOf(updateStudent);
+        var updatingStudents = GetStudentById(student.Id);
+        var index = _students.IndexOf(student);
+        _students[index] = student;
         SaveData();
     }
 
@@ -75,18 +76,9 @@ public class StudentRepository : IStudentRepository
         SaveData();
         return student.Id;
     }
-
-   
-
-    private void SaveData()
+    private void SaveData ()
     {
         var studentJson = JsonSerializer.Serialize(_students);
         File.WriteAllText(_path, studentJson);
-
-    }
-
-    object IStudentRepository.WriteStudent(object entitiy)
-    {
-        throw new NotImplementedException();
     }
 }

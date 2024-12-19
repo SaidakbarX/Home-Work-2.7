@@ -1,5 +1,7 @@
-﻿using _2._7dars.Api.Services;
+﻿
+using HomeWork_2._7.DataAccess.Enums;
 using HomeWork_2._7.Services.DTOs;
+using System.Security.Principal;
 
 namespace HomeWork_2._7
 {
@@ -7,7 +9,7 @@ namespace HomeWork_2._7
     {
         static void Main(string[] args)
         {
-            var dto1 = new StudentUpdateDto()
+            var dto1 = new StudentUpdateDto();
             {
                 Id = Guid.NewGuid(),
                 FirstName = "Aziz",
@@ -17,23 +19,11 @@ namespace HomeWork_2._7
                 Password = "password",
                 Gender = 0,
                 Degree = 0,
+               
+               
             };
 
-            var dto2 = new StudentUpdateDto()
-            {
-                Id = Guid.NewGuid(),
-                FirstName = "Azizjon",
-                LastName = "Laripov",
-                Age = 24,
-                Email = "Latipov@gmail.com",
-                Password = "password12",
-                Gender = 0,
-                Degree = (Services.Enums.DegreeDto)1,
-            };
-
-            IStudentService studentService = new StudentService();
-            studentService.UpdateStudent(dto1);
-            studentService.UpdateStudent(dto2);
+            
         }
     }
 }
