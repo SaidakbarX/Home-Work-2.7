@@ -65,7 +65,7 @@ public class StudentRpository : IStudentRepository
     public void UpdateStudent(Student student)
     {
         var updatingStudents = GetStudentById(student.Id);
-        var index = _students.IndexOf(student);
+        var index = _students.IndexOf(updatingStudents);
         _students[index] = student;
         SaveData();
     }

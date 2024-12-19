@@ -154,7 +154,7 @@ public class StudentService : IStudentService
         {
             return false;
         }
-        if (string.IsNullOrWhiteSpace(obj.Password) || obj.Password.Length < 50)
+        if (string.IsNullOrWhiteSpace(obj.Password) || obj.Password.Length > 50)
         {
             return false;
         }
